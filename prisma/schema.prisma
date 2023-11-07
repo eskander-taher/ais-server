@@ -1,0 +1,52 @@
+// The "generator" section defines the code generation settings for Prisma client.
+generator client {
+  provider = "prisma-client-js" // Specifies the Prisma client provider for JavaScript
+}
+
+// The "datasource" section configures the data source, in this case, a PostgreSQL database.
+datasource db {
+  provider = "postgresql" // Specifies the database provider as PostgreSQL
+  url      = env("DATABASE_URL") // The URL to the PostgreSQL database is fetched from the environment variable "DATABASE_URL"
+}
+
+// The following sections define the data models for your database schema.
+
+// Model "User" represents user data with an "id", "name", and relationships to "buildings" and "accessLogs."
+model User {
+  id String @id @default(uuid()) // Unique user ID generated as a UUID
+  name String // User's name
+  buildings Building[] // User's association with buildings
+  accessLogs AccessLog[] // User's access logs
+  createdAt DateTime @default(now()) // Creation timestamp for the user
+}
+
+// Model "Building" represents building data with an "id," "name," and relationships to "accessPoints" and "users."
+model Building {
+  id String @id @default(uuid()) // Unique building ID generated as a UUID
+  name String // Building's name
+  accessPoints AccessPoint[] // Access points within the building
+  users User[] // Users associated with the building
+  createdAt DateTime @default(now()) // Creation timestamp for the building
+}
+
+// Model "AccessPoint" represents access point data with an "id," "name," and relationships to "building" and "accessLogs."
+model AccessPoint {
+  id String @id @default(uuid()) // Unique access point ID generated as a UUID
+  name String // Access point's name
+  buildingId String // Unique building ID associated with the access point
+  building Building @relation(fields: [buildingId], references: [id]) // Relationship to the parent building
+  accessLogs AccessLog[] // Access logs for this access point
+  createdAt DateTime @default(now()) // Creation timestamp for the access point
+}
+
+// Model "AccessLog" represents access log data with an "id," "accessStatus," "accessType," and relationships to "user" and "accessPoint."
+model AccessLog {
+  id String @id @default(uuid()) // Unique access log ID generated as a UUID
+  accessStatus String // Status of the access attempt
+  accessType String // Type of access attempt
+  accessTime DateTime @default(now()) // Timestamp of the access attempt
+  userId String  // Unique user ID associated with the access log
+  user User @relation(fields: [userId], references: [id]) // Relationship to the user
+  accessPointId String // Unique access point ID associated with the access log
+  accessPoint AccessPoint @relation(fields: [accessPointId], references: [id]) // Relationship to the access point
+}
