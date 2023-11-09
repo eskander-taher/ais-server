@@ -27,37 +27,24 @@ async function main() {
     },
   ];
 
-  const accessPoints = [
-    {
-      id: 'accessPoint1',
-      name: 'Access Point 1',
-      buildingId: 'building1',
-    },
-    {
-      id: 'accessPoint2',
-      name: 'Access Point 2',
-      buildingId: 'building2',
-    },
-  ];
-
   const accessLogs = [
     {
       id: 'accessLog1',
       accessStatus: 'Granted',
       accessType: 'Entry',
       userId: 'user1',
-      accessPointId: 'accessPoint1',
+      buildingId: 'building1',
     },
     {
       id: 'accessLog2',
       accessStatus: 'Denied',
       accessType: 'Entry',
       userId: 'user2',
-      accessPointId: 'accessPoint2',
+      buildingId: 'building2',
     },
   ];
 
-  // Create users, buildings, access points, and access logs
+  // Create users, buildings, and access logs
   for (const userData of users) {
     await prisma.user.create({
       data: userData,
@@ -67,12 +54,6 @@ async function main() {
   for (const buildingData of buildings) {
     await prisma.building.create({
       data: buildingData,
-    });
-  }
-
-  for (const accessPointData of accessPoints) {
-    await prisma.accessPoint.create({
-      data: accessPointData,
     });
   }
 
